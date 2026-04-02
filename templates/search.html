@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Search: {{ query }}{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="container">
+        <div class="search-results-header">
+            <h1>Search Results {% if query %}for "<span class="query">{{ query }}</span>"{% endif %}</h1>
+            {% if results %}
+            <p class="count">{{ results.total }} article{{ 's' if results.total != 1 }} found</p>
+            {% endif %}
+            <form action="{{ url_for('search') }}" method="GET" class="inline-search">
+                <input type="text" name="q" value="{{ query }}" placeholder="Search news, topics, people...">
+                <button type="submit">Search</button>
+            </form>
+        </div>
+
+        {% if results and results.items %}
+        <div id="search-results">
+            {% for article in results.items %}
+            <a href="{{ url_for('article_detail', slug=article.slug) }}" class="article-card-horizontal animate-in" style="animation-delay: {{ loop.index * 0.05 }}s">
+                <div class="card-image">
+                    <img src="{{ article.image_url }}" alt="{{ article.title }}"
+                         onerror="this.src='https://images.unsplash.com/photo-1504711434969-e33886168d5c?w=400&h=300&fit=crop'">
+                </div>
+                <div class="card-body">
+                    <h3>{{ article.title }}</h3>
+                    <p class="excerpt">{{ article.short_description }}</p>
+                    <div class="card-meta">
+                        <span class="author">{{ article.author }}</span>
+                        <span>{{ article.time_ago() }}</span>
+                        <span>{{ article.category }}</span>
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+
+        {% if results.pages > 1 %}
+        <div class="pagination">
+            {% if results.has_prev %}
+            <a href="{{ url_for('search', q=query, page=results.prev_num) }}">← Previous</a>
+            {% endif %}
+            {% for page_num in results.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                {% if page_num %}
+                <a href="{{ url_for('search', q=query, page=page_num) }}" class="{% if page_num == results.page %}active{% endif %}">{{ page_num }}</a>
+                {% else %}
+                <span>…</span>
+                {% endif %}
+            {% endfor %}
+            {% if results.has_next %}
+            <a href="{{ url_for('search', q=query, page=results.next_num) }}">Next →</a>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {% elif query %}
+        <div class="empty-state">
+            <div class="icon">🔍</div>
+            <h3>No results found</h3>
+            <p>Try searching with different keywords</p>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="icon">🔍</div>
+            <h3>Search for News</h3>
+            <p>Enter keywords to find articles</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

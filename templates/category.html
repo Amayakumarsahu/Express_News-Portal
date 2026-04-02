@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}{{ category }} News - Latest {{ category }} Headlines{% endblock %}
+{% block meta_desc %}Read latest {{ category }} news, headlines, updates and breaking stories on Mumbai Express.{% endblock %}
+
+{% block content %}
+<!-- Category Header -->
+<div class="category-header">
+    <div class="container">
+        <h1>{{ category }} News</h1>
+        <p>Latest headlines, breaking news, and in-depth coverage</p>
+    </div>
+</div>
+
+<div class="main-content" style="padding-top: 0;">
+    <div class="container">
+        {% if articles and articles.items %}
+        <!-- Articles Grid -->
+        <div class="articles-grid">
+            {% for article in articles.items %}
+            <a href="{{ url_for('article_detail', slug=article.slug) }}" class="article-card animate-in" style="animation-delay: {{ loop.index * 0.05 }}s">
+                <div class="card-image">
+                    <img src="{{ article.image_url }}" alt="{{ article.title }}"
+                         onerror="this.src='https://images.unsplash.com/photo-1495020689067-958852a7765e?w=600&h=400&fit=crop'">
+                    <span class="category-badge">{{ article.category }}</span>
+                </div>
+                <div class="card-body">
+                    <h3>{{ article.title }}</h3>
+                    <p class="excerpt">{{ article.short_description }}</p>
+                    <div class="card-meta">
+                        <span class="author">{{ article.author }}</span>
+                        <span>{{ article.time_ago() }}</span>
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if articles.pages > 1 %}
+        <div class="pagination">
+            {% if articles.has_prev %}
+            <a href="{{ url_for('category_page', category_name=category, page=articles.prev_num) }}">← Previous</a>
+            {% endif %}
+
+            {% for page_num in articles.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                {% if page_num %}
+                    <a href="{{ url_for('category_page', category_name=category, page=page_num) }}"
+                       class="{% if page_num == articles.page %}active{% endif %}">{{ page_num }}</a>
+                {% else %}
+                    <span>…</span>
+                {% endif %}
+            {% endfor %}
+
+            {% if articles.has_next %}
+            <a href="{{ url_for('category_page', category_name=category, page=articles.next_num) }}">Next →</a>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {% else %}
+        <div class="empty-state">
+            <div class="icon">📰</div>
+            <h3>No articles found</h3>
+            <p>There are no articles in the "{{ category }}" category yet.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

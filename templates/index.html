@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block title %}Mumbai News Today, Latest Headlines & Breaking News{% endblock %}
+{% block meta_desc %}Mumbai News Today: Read latest Mumbai news headlines, breaking news, crime, politics, sports, entertainment and more on Mumbai Express.{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="container">
+        <!-- Breadcrumb -->
+        <div class="breadcrumb">
+            <a href="{{ url_for('index') }}">Home</a>
+            <span class="separator">›</span>
+            <span>Mumbai News</span>
+        </div>
+
+        <div class="content-grid">
+            <!-- Main Column -->
+            <div class="primary-content">
+                <!-- Hero Featured Article -->
+                {% if featured %}
+                <a href="{{ url_for('article_detail', slug=featured.slug) }}" class="hero-article animate-in">
+                    <img src="{{ featured.image_url }}" alt="{{ featured.title }}" class="hero-image"
+                         onerror="this.src='https://images.unsplash.com/photo-1567157577867-05ccb1388e66?w=1200&h=600&fit=crop'">
+                    <div class="hero-overlay">
+                        <span class="category-badge">{{ featured.category }}</span>
+                        <h1>{{ featured.title }}</h1>
+                        <div class="meta">
+                            <span class="author">{{ featured.author }}</span>
+                            <span>{{ featured.time_ago() }}</span>
+                            <span>{{ featured.views }} views</span>
+                        </div>
+                    </div>
+                </a>
+                {% endif %}
+
+                <!-- Top Stories -->
+                <div class="section-header">
+                    <h2>Top Stories</h2>
+                    <a href="{{ url_for('category_page', category_name='Mumbai') }}" class="view-all">View All →</a>
+                </div>
+
+                <div class="top-stories-grid">
+                    {% for article in top_stories[:4] %}
+                    <a href="{{ url_for('article_detail', slug=article.slug) }}" class="article-card animate-in" style="animation-delay: {{ loop.index * 0.05 }}s">
+                        <div class="card-image">
+                            <img src="{{ article.image_url }}" alt="{{ article.title }}"
+                                 onerror="this.src='https://images.unsplash.com/photo-1495020689067-958852a7765e?w=600&h=400&fit=crop'">
+                            <span class="category-badge">{{ article.category }}</span>
+                        </div>
+                        <div class="card-body">
+                            <h3>{{ article.title }}</h3>
+                            <p class="excerpt">{{ article.short_description }}</p>
+                            <div class="card-meta">
+                                <span class="author">{{ article.author }}</span>
+                                <span>{{ article.time_ago() }}</span>
+                            </div>
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+
+                <!-- Latest News -->
+                <div class="section-header">
+                    <h2>Latest News</h2>
+                </div>
+
+                <div id="latest-articles">
+                    {% for article in latest %}
+                    <a href="{{ url_for('article_detail', slug=article.slug) }}" class="article-card-horizontal animate-in" style="animation-delay: {{ loop.index * 0.03 }}s">
+                        <div class="card-image">
+                            <img src="{{ article.image_url }}" alt="{{ article.title }}"
+                                 onerror="this.src='https://images.unsplash.com/photo-1504711434969-e33886168d5c?w=400&h=300&fit=crop'">
+                        </div>
+                        <div class="card-body">
+                            <h3>{{ article.title }}</h3>
+                            <p class="excerpt">{{ article.short_description }}</p>
+                            <div class="card-meta">
+                                <span class="author">{{ article.author }}</span>
+                                <span>{{ article.time_ago() }}</span>
+                                <span>{{ article.category }}</span>
+                            </div>
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+
+                <!-- Load More -->
+                <div class="load-more-wrap">
+                    <button class="btn-load-more" id="load-more-btn" data-page="2">Load More Stories</button>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <!-- Trending Widget -->
+                <div class="sidebar-widget">
+                    <div class="widget-header">
+                        <span class="icon">🔥</span> Trending Now
+                    </div>
+                    <div class="widget-body">
+                        {% for article in trending %}
+                        <a href="{{ url_for('article_detail', slug=article.slug) }}" class="trending-item">
+                            <span class="rank">{{ loop.index }}</span>
+                            <div>
+                                <div class="trending-title">{{ article.title }}</div>
+                                <div class="trending-meta">{{ article.views }} views · {{ article.time_ago() }}</div>
+                            </div>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Categories Widget -->
+                <div class="sidebar-widget">
+                    <div class="widget-header">
+                        <span class="icon">📂</span> Categories
+                    </div>
+                    <div class="widget-body">
+                        {% for cat in categories %}
+                        <a href="{{ url_for('category_page', category_name=cat) }}" class="trending-item">
+                            <span class="rank" style="font-size:18px">›</span>
+                            <div>
+                                <div class="trending-title">{{ cat }}</div>
+                            </div>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Newsletter Widget -->
+                <div class="sidebar-widget">
+                    <div class="widget-header">
+                        <span class="icon">📧</span> Newsletter
+                    </div>
+                    <div class="widget-body" style="padding: 20px;">
+                        <p style="font-size:14px;color:#4A4A4A;margin-bottom:12px;">Get the latest Mumbai news delivered to your inbox every morning.</p>
+                        <form onsubmit="event.preventDefault();alert('Thanks for subscribing!');">
+                            <div class="form-group" style="margin-bottom:12px">
+                                <input type="email" placeholder="Enter your email" style="padding:10px 14px;font-size:14px;" required>
+                            </div>
+                            <button type="submit" class="btn-primary" style="padding:10px;font-size:13px;">Subscribe Free</button>
+                        </form>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+</div>
+{% endblock %}
