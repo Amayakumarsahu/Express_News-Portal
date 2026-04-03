@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Today's E-Paper{% endblock %}
+{% block content %}
+<div class="main-content">
+    <div class="container content-grid" style="padding: 40px 0;">
+        <div class="primary-content" style="width: 100%;">
+            <div class="section-header">
+                <h2>Today's E-Paper</h2>
+            </div>
+            <div style="text-align: center; background: #f9f9f9; padding: 40px; border-radius: 8px;">
+                <img src="{{ url_for('static', filename='images/epaper_preview.png') }}" alt="E-Paper Preview" style="max-width: 100%; border-radius: 4px; margin-bottom: 20px;">
+                <h3>News24Plus E-Paper</h3>
+                <p style="color: #666; margin-bottom: 20px;">Read the complete digital replica of today's newspaper.</p>
+                <button class="btn-primary" onclick="alert('E-Paper download starting...')" style="padding: 10px 20px; font-size: 16px; margin: 5px;">Download PDF</button>
+                <button class="btn-subscribe" onclick="alert('Opening E-Paper reader...')" style="padding: 10px 20px; font-size: 16px; margin: 5px;">Read Online</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
